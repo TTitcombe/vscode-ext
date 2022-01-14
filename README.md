@@ -1,3 +1,4 @@
+<!---Documatic-section-fixed: top1-start--->
 <p align="center">
   <img alt="vscode logo" src="https://github.com/CodeWithSwastik/vscode-ext/blob/main/images/vscode-ext-2.png?raw=true" width='500px'/>
 </p>
@@ -11,13 +12,8 @@
 
 Create vscode extensions and color themes with python.
 
-## Installation
-
-Stable version:
-
-```sh-session
-pip install vscode-ext
-```
+<!---Documatic-section-fixed: top1-end--->
+<!---Documatic-section-fixed: top2-start--->
 
 ## Why use this?
 
@@ -27,87 +23,315 @@ Why should you use this for building VScode extensions when you can use typescri
 - vscode-ext provides a more pythonic way of creating the extension. Python also has some powerful modules that Javascript doesn't and you can include these with vscode-ext
 - vscode-ext extensions work perfectly with vsce and you can publish your extensions just like you would publish any other extension.
 
-## Example Extension
+<!---Documatic-section-fixed: top2-end--->
 
+## Requirements
+
+* Python version 3.6 and above
+are compatible.
+* Install requirements with `pip install -r requirements.txt`.
+* `vscode-ext` is pip-installable.
+Clone the repository
+and run `pip install -e .` in top-level directory to install
+package locally
+* Alternatively, run `pip install vscode-ext` to install from pypi
+
+### Developers
+
+* There are no specific developer requirements
+* No unit tests present
+* The project uses GitHub Actions for CI/CD.
+
+| Script | Description |
+|:------:|:---------|
+| `.github/workflows/docs.yml` | Executed on push to branch `main` |
+
+## Quickstart example
+
+Initialize the extension
+with a version (SemVer)
+and an extension name.
+
+<!---Documatic-section-code: f12313-examples/hello_world.py-1-3--->
 ```python
 import vscode
 
-ext = vscode.Extension(name = "testpy", display_name = "Test Py", version = "0.0.1")
+ext = vscode.Extension(name="firstext", display_name="First Ext", version="0.0.1")
 
 @ext.event
 def on_activate():
     return f"The Extension '{ext.name}' has started"
+```
 
+Wrap a function in a command decorator to create a command.
+The command name
+"Hello World"
+is automatically generated
+from the function name.
+
+<!---Documatic-section-code: f12313-examples/hello_world.py-5-8--->
+```python
 @ext.command()
 def hello_world():
-    vscode.window.show_info_message(f'Hello World from {ext.name}')
+    vscode.window.show_info_message(f"Hello World from {ext.display_name}")
+```
 
-@ext.command(keybind="ALT+5")
-def ask_question():
-    res = vscode.window.show_info_message('How are you?', 'Great', 'Meh')
-    if res == "Great":
-        vscode.window.show_info_message('Woah nice!!')
-    elif res == "Meh":
-        vscode.window.show_info_message('Sorry to hear that :(')
+Run the python script to build the extension.
 
+<!---Documatic-section-code: f12313-examples/hello_world.py-16-17--->
+```python
 vscode.build(ext)
 ```
 
-## Tutorial
+## Code structure
 
-### Step 1
+Source code is 
+The source code has a single-depth (flat) structure.
 
-Create a python file inside a folder.
+### Code Entrypoints
 
-![image](https://user-images.githubusercontent.com/61446939/126891766-8e408f35-ce63-48b1-8739-1361e979d351.png)
+There are 23 source code objects
+in top-level `__main__`/`__init__`.
+They are broken down into the following modules:
 
-### Step 2
+* [`vscode.types`](#vscodetypespy) has 15 entrypoints
+* [`vscode.compiler`](#vscodecompilerpy) has 2 entrypoints
+* [`vscode.extension`](#vscodeextensionpy) has 2 entrypoints
+* [`vscode.webviews`](#vscodewebviewspy) has 2 entrypoints
+* [`vscode.env_methods`](#vscodeenv_methodspy) has 1 entrypoints
+* [`vscode.themes`](#vscodethemespy) has 1 entrypoints
 
-Write the code for your extension. For this tutorial we have used the [Example Extension](#example-extension)
+### Class structure
 
-![image](https://user-images.githubusercontent.com/61446939/126891803-8da2e8e8-174f-451b-9103-4fbf001c4e7b.png)
+The project has classes which are used in multiple functions:
 
-### Step 3
+* `vscode.themes.BaseColorSet` is used 1 times
+* `vscode.themes.ColorSet` is used 2 times
+* `vscode.extension.Extension` is used 1 times
+* `vscode.themes.ColorTheme` is used 2 times
 
-Run the python file. It will build the files.
+The project's class inheritance structure is:
 
-![image](https://user-images.githubusercontent.com/61446939/126891865-fe235598-9267-47c6-971f-43e4da456ebb.png)
-![image](https://user-images.githubusercontent.com/61446939/126891875-62c2057e-e504-4e01-bfd6-9a20c7f660d9.png)
+* `vscode.types.Range` has 1 child classes:
+  * `vscode.types.Selection`
+* `vscode.window.TextEditor` has 1 child classes:
+  * `vscode.window.ActiveTextEditor`
 
-### Step 4
+## API
 
-Press F5. This will run the extension and open a new vscode window in development mode.
+### `vscode/`
 
-### Step 5
+The module is stable:
+0 lines added or removed
+in the last 4 weeks.
 
-Finally, test your command.
+#### `vscode/compiler.py`
 
-- Open the command palette with Ctrl+P in the development window.
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
 
-![image](https://user-images.githubusercontent.com/61446939/126892044-f3b5f4d3-37de-4db5-acef-c6ddd841f1a5.png)
+Some important objects are:
 
-- Type `>Hello World`
-
-![image](https://user-images.githubusercontent.com/61446939/126892096-9fc1cb2f-9b76-4d53-8099-e74d9f22e6e7.png)
-
-- It should show a popup like this in the bottom right corner
-
-![image](https://user-images.githubusercontent.com/61446939/126892110-f8d4bcf2-9ec0-43c2-a7d6-40288d91f000.png)
- 
-## Color Theme Example
+**build**
 
 ```python
-import vscode
-
-theme = vscode.ColorTheme(name='my-theme', display_name='My Theme', version='0.0.1')
-theme.set_colors(
-    background='#12171F',
-    foreground='#EFEFEF',
-    accent_colors=['#399EF4', '#DA6771', '#4EB071', '#FFF099']
-)
-vscode.build_theme(theme)
+build(extension: Extension, publish: bool = False, config: dict = None) -> None
+    Builds the extension.
+    If variable config is None, config is an empty dict.
+    If the extension publisher is None, the config publisher is user input.
+    The function measures the time taken to run the function.
 ```
-  
+
+#### `vscode/config.py`
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+#### `vscode/data.py`
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+#### `vscode/env_methods.py`
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+#### `vscode/extension.py`
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+Some important objects are:
+
+**Extension**
+
+```
+Extension
+  __init__(
+    self,
+    name: str,
+    display_name: str,
+    version: str,
+    description: Optional[str] = None,
+    categories: Optional[list] = None,
+    config: List[Config] = [],
+    vscode_version: Optional[str] = None,
+    icon: Optional[str] = None,
+    publisher: Optional[str] = None,
+    repository: Optional[dict] = None,
+    ) -> None
+        An error is raised if there is a space in name.
+
+  register_command(
+        self,
+        func: Callable,
+        name: Optional[str] = None,
+        title: Optional[str] = None,
+        category: Optional[str] = None,
+        keybind: Optional[str] = None,
+        when: Optional[str] = None,
+    ) -> None
+        The name variable is a function name if the name variable is None.
+
+  event(self, func: Callable[[], str])
+        A decorator for adding event handlers
+        The name variable is the function name with "on" removed.
+        The function is added to event.
+```
+
+#### `vscode/themes.py`
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+Some important objects are:
+
+**BaseColorSet**
+
+```python
+BaseColorSet
+    __init__(self, background: str, foreground: str, colors: list)
+```
+
+**ColorSet**
+
+```python
+ColorSet
+    __init__(self, base: BaseColorSet, syntax: dict = None, ui: dict = None, terminal: dict = None, type: str = "dark")
+```
+
+**ColorTheme**
+
+```python
+ColorTheme
+    __init__( self, name: str, display_name: str, version: str, type: str = "dark", description: str = None, publisher: str = None, keywords: list = None, icon: str = None)
+```
+
+#### `vscode/types.py`
+
+This file defines classes
+used elsewhere in the codebase.
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+Some important objects are:
+
+**Range**
+
+```python
+Range
+    __init__(self, start: Position, end: Position)
+        A range represents an ordered pair of two positions. It is guaranteed that start.isBeforeOrEqual(end)
+```
+```
+    intersection(self, other)
+        Returns undefined if end is less than other's start or other's end is left than start.
+        start variable is the largest value of start and other's start.
+        end variable is the smallest value of end and other's end.
+        Returns a range of start and end.
+
+    union(self, other)
+        start variable is the smallest value of start and other's start.
+        end variable is the largest value of end and other's end.
+        Returns a range of start and end.
+```
+
+**Selection**
+
+```python
+Selection(Range)
+    __init__(self, active: Position, anchor: Position, start: Position, end: Position)
+        Represents a text selection in an editor.
+```
+
+#### `vscode/undef.py`
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+#### `vscode/utils.py`
+
+This file defines functions
+used elsewhere in the codebase.
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+Some important objects are:
+
+**send_ipc**
+
+```python
+send_ipc(code: str, args: list=None)
+    Makes json of code and args.
+    code is the code parameter.
+    args is an empty list if args is None
+```
+
+#### `vscode/webviews.py`
+
+The file is stable:
+0 lines added or removed
+in the last 4 weeks.
+
+#### `vscode/window.py`
+
+A mix of functions
+and classes.
+Several objects are imported
+from this file
+around the codebase.
+
+Some important objects are:
+
+**TextEditor**
+
+```python
+TextEditor
+    __init__(self, data: dict = None)
+```
+
+**ActiveTextEditor**
+
+```python
+ActiveTextEditor(TextEditor)
+    create_webview(webview: Webview, column: ViewColumn = ViewColumn.one, options: dict = None) -> Webview
+        Checks if webview is a Webview type, otherwise raises an error.
+        Checks if column is a ViewColumn type, otherwise raises an error.
+```
+
+<!---Documatic-section-fixed: bottom1-start--->
 ## Extensions built using vscode-ext
 
 Here's a list of some extensions built using vscode-ext. If you'd like to include your extension here feel free to create a PR.
@@ -117,7 +341,4 @@ Here's a list of some extensions built using vscode-ext. If you'd like to includ
 - [Internet Search](https://github.com/Dorukyum/internet-search)
 - [Virtual Assistant](https://github.com/SohamGhugare/vscode-virtual-assistant)
 - [YoExtension](https://github.com/yo56789/YoExtension)
-
-## Documentation
-
-The docs are coming soon! In the meantime you can look at the [examples](https://github.com/CodeWithSwastik/vscode-ext/tree/main/examples) in order to learn how vscode-ext works and what it offers!
+<!---Documatic-section-fixed: bottom2-end--->
