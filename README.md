@@ -8,6 +8,9 @@
 <a href="https://pypi.python.org/pypi/vscode-ext/"><img src="https://badge.fury.io/py/vscode-ext.svg" alt="PyPI version"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
+**Last updated:** 2022-02-09\
+_Document generation aided by [**Documatic**](www.documatic.com)_
+
 ## About
 
 Create vscode extensions and color themes with python.
@@ -25,28 +28,110 @@ Why should you use this for building VScode extensions when you can use typescri
 
 <!---Documatic-section-fixed: top2-end--->
 
-## Requirements
+<!---Documatic-section-group: helloworld-start--->
 
-* Python version 3.6 and above
-are compatible.
-* Install requirements with `pip install -r requirements.txt`.
-* `vscode-ext` is pip-installable.
-Clone the repository
-and run `pip install -e .` in top-level directory to install
-package locally
-* Alternatively, run `pip install vscode-ext` to install from pypi
 
-### Developers
+## Getting Started
 
-* There are no specific developer requirements
-* No unit tests present
-* The project uses GitHub Actions for CI/CD.
+<!---Documatic-section-helloworld: setup-start--->
+* The codebase has a flat structure, with 12 code files.
+* The codebase is compatible with Python 3.6 and above (f-strings in e.g. `vscode-ext/vscode/themes.py`)
+* Install requirements with `pip install -r requirements.txt` or install directly from pypi:
 
-| Script | Description |
-|:------:|:---------|
-| `.github/workflows/docs.yml` | Executed on push to branch `main` |
+```
+pip install vscode-ext
+```
 
-## Quickstart example
+<!---Documatic-section-helloworld: setup-end--->
+
+<!---Documatic-section-helloworld: entrypoints-start--->
+
+
+### Code Overview
+
+There are 23 source code objects in top-level `__main__`/`__init__`.
+Some key functions include:
+
+### `build` from `vscode/compiler.py`
+ 
+```python
+build(extension: Extension, publish: bool=False, config: dict=None) -> None
+
+The code has a high cyclomatic complexity.
+Builds the extension.
+extension - Attributes of the object are read to build a config
+config - A configuration dictionary of variables
+Calls several internal functions,
+such as `build_py`, `build_js`.
+```
+
+### `build_theme` from `vscode/compiler.py`
+ 
+```python
+build_theme(theme: ColorTheme, config: dict=None)
+
+This function takes a theme object and a config object.
+If the config is None, it creates an empty config object.
+Checks theme for attributes to populate the config object.
+The code has a high cyclomatic complexity.
+Builds the files needed for the theme.
+Calls several internal functions,
+such as `create_theme_package`, `create_theme_files`.
+```
+
+These entrypoints are broken down into the following modules:
+
+* [`vscode.types`](#vscodetypespy) has 15 entrypoints
+* [`vscode.compiler`](#vscodecompilerpy) has 2 entrypoints
+* [`vscode.extension`](#vscodeextensionpy) has 2 entrypoints
+* [`vscode.webviews`](#vscodewebviewspy) has 2 entrypoints
+* [`vscode.env_methods`](#vscodeenv_methodspy) has 1 entrypoints
+* [`vscode.themes`](#vscodethemespy) has 1 entrypoints
+
+### Class structure
+
+The project has classes which are used in multiple functions:
+
+* `vscode.themes.BaseColorSet` is used 1 times
+* `vscode.themes.ColorSet` is used 2 times
+* `vscode.extension.Extension` is used 1 times
+* `vscode.themes.ColorTheme` is used 2 times
+
+#### vscode.extension.Extension
+
+Some key methods include:
+
+```python
+Extension
+        Represents a vscode extension
+
+command(name, title, category, keybind, when)
+        A decorator.
+        Runs internal method `register_command`.
+
+register_command(func, name, title, category, keybind, when)
+        Uses the default_category attribute of the class if category is None.
+        Creates a Command.
+        If a keybind is given, registers a keybind for the Command.
+        Adds the Command to a list of commands.
+```
+
+#### Inheritance
+
+The project's class inheritance structure is:
+
+* `vscode.types.Range` has 1 child classes:
+  * `vscode.types.Selection`
+* `vscode.window.TextEditor` has 1 child classes:
+  * `vscode.window.ActiveTextEditor`
+
+
+<!---Documatic-section-helloworld: entrypoints-end--->
+
+<!---Documatic-section-group: concept-start--->
+## Examples
+
+### Quickstart
 
 Initialize the extension
 with a version (SemVer)
@@ -83,158 +168,112 @@ Run the python script to build the extension.
 vscode.build(ext)
 ```
 
-## Code structure
+<!---Documatic-section-group: concept-end--->
 
-Source code is 
-The source code has a single-depth (flat) structure.
+<!---Documatic-section-group: helloworld-end--->
 
-### Code Entrypoints
+<!---Documatic-section-group: dev-start--->
 
-There are 23 source code objects
-in top-level `__main__`/`__init__`.
-They are broken down into the following modules:
 
-* [`vscode.types`](#vscodetypespy) has 15 entrypoints
-* [`vscode.compiler`](#vscodecompilerpy) has 2 entrypoints
-* [`vscode.extension`](#vscodeextensionpy) has 2 entrypoints
-* [`vscode.webviews`](#vscodewebviewspy) has 2 entrypoints
-* [`vscode.env_methods`](#vscodeenv_methodspy) has 1 entrypoints
-* [`vscode.themes`](#vscodethemespy) has 1 entrypoints
+## Developers
+<!---Documatic-section-dev: ci-start--->
+* Install locally with `pip install -e .`
+* vscode-ext does not contain unit tests
+* The project uses GitHub Actions for CI/CD
 
-### Class structure
+| CI File | Purpose |
+|:----|:----|
+| docs | Executes on push for branch main. Builds docs |
 
-The project has classes which are used in multiple functions:
 
-* `vscode.themes.BaseColorSet` is used 1 times
-* `vscode.themes.ColorSet` is used 2 times
-* `vscode.extension.Extension` is used 1 times
-* `vscode.themes.ColorTheme` is used 2 times
+<!---Documatic-section-dev: ci-end--->
 
-The project's class inheritance structure is:
+<!---Documatic-section-group: dev-end--->
 
-* `vscode.types.Range` has 1 child classes:
-  * `vscode.types.Selection`
-* `vscode.window.TextEditor` has 1 child classes:
-  * `vscode.window.ActiveTextEditor`
+### **vscode-ext/**
 
-## API
-
-### `vscode/`
-
-The module is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-#### `vscode/compiler.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-Some important objects are:
-
-**build**
+#### themes.py
 
 ```python
-build(extension: Extension, publish: bool = False, config: dict = None) -> None
-    Builds the extension.
-    If variable config is None, config is an empty dict.
-    If the extension publisher is None, the config publisher is user input.
-    The function measures the time taken to run the function.
+global_setting_generator(name: str)
+
+This function takes a name of a setting, and returns a function that takes a color and returns a dictionary with the setting name as the key and the color as the value.
+This function is a generator, so you can use it in a for loop to iterate over all the colors.
 ```
-
-#### `vscode/config.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-#### `vscode/data.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-#### `vscode/env_methods.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-#### `vscode/extension.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-Some important objects are:
-
-**Extension**
-
-```
-Extension
-  __init__(
-    self,
-    name: str,
-    display_name: str,
-    version: str,
-    description: Optional[str] = None,
-    categories: Optional[list] = None,
-    config: List[Config] = [],
-    vscode_version: Optional[str] = None,
-    icon: Optional[str] = None,
-    publisher: Optional[str] = None,
-    repository: Optional[dict] = None,
-    ) -> None
-        An error is raised if there is a space in name.
-
-  register_command(
-        self,
-        func: Callable,
-        name: Optional[str] = None,
-        title: Optional[str] = None,
-        category: Optional[str] = None,
-        keybind: Optional[str] = None,
-        when: Optional[str] = None,
-    ) -> None
-        The name variable is a function name if the name variable is None.
-
-  event(self, func: Callable[[], str])
-        A decorator for adding event handlers
-        The name variable is the function name with "on" removed.
-        The function is added to event.
-```
-
-#### `vscode/themes.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-Some important objects are:
-
-**BaseColorSet**
 
 ```python
-BaseColorSet
-    __init__(self, background: str, foreground: str, colors: list)
-```
+simple_color_generator(name: str, scope: str, font_style: int = FontStyle.NONE)
 
-**ColorSet**
+The function is a generator.
+It returns a generator object.
+The generator object has a __next__() method.
+```
 
 ```python
-ColorSet
-    __init__(self, base: BaseColorSet, syntax: dict = None, ui: dict = None, terminal: dict = None, type: str = "dark")
-```
+lighten(color: str, amount: int) -> str
 
-**ColorTheme**
+This function takes a color and an amount.
+It returns a lighter color.
+The color is a tuple of three integers between 0 and 255.
+```
 
 ```python
-ColorTheme
-    __init__( self, name: str, display_name: str, version: str, type: str = "dark", description: str = None, publisher: str = None, keywords: list = None, icon: str = None)
+add_alpha(color: str, alpha: int) -> str
+
+This function takes a color and an alpha value and returns a new color.
+The color must be in #rrggbb format.
+The code has a high cyclomatic complexity.
+Raises ValueError.
 ```
 
-#### `vscode/types.py`
+```python
+generate_fallback_color_set(s: BaseColorSet, type: str) -> ColorSet
+
+This function takes a string and a type, and returns a color set.
+The type can be 'light' or 'dark'.
+```
+
+```python
+generate_theme(name: str, color_set: ColorSet) -> dict
+```
+
+```python
+contrast(color: str) -> str
+
+The function takes a color as a parameter.
+It checks if the color is None.
+If it is, it returns None.
+This is a Python idiom.
+It means that if the color is None, then the function returns None.
+```
+
+#### compiler.py
+
+```python
+create_package(data: dict, config: dict) -> dict
+```
+
+```python
+build(extension: Extension, publish: bool=False, config: dict=None) -> None
+
+The code has a high cyclomatic complexity.
+Builds the extension.
+Parameters:
+- extension: The extension to build
+- publish: If `True`, files needed for publishing will be created
+```
+
+```python
+build_theme(theme: ColorTheme, config: dict=None)
+
+This function takes a theme object and a config object.
+It checks if the config object is None.
+If it is, it creates a new config object.
+The code has a high cyclomatic complexity.
+Builds the files needed for the theme.
+```
+
+#### types.py
 
 This file defines classes
 used elsewhere in the codebase.
@@ -243,43 +282,7 @@ The file is stable:
 0 lines added or removed
 in the last 4 weeks.
 
-Some important objects are:
-
-**Range**
-
-```python
-Range
-    __init__(self, start: Position, end: Position)
-        A range represents an ordered pair of two positions. It is guaranteed that start.isBeforeOrEqual(end)
-```
-```
-    intersection(self, other)
-        Returns undefined if end is less than other's start or other's end is left than start.
-        start variable is the largest value of start and other's start.
-        end variable is the smallest value of end and other's end.
-        Returns a range of start and end.
-
-    union(self, other)
-        start variable is the smallest value of start and other's start.
-        end variable is the largest value of end and other's end.
-        Returns a range of start and end.
-```
-
-**Selection**
-
-```python
-Selection(Range)
-    __init__(self, active: Position, anchor: Position, start: Position, end: Position)
-        Represents a text selection in an editor.
-```
-
-#### `vscode/undef.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-#### `vscode/utils.py`
+#### utils.py
 
 This file defines functions
 used elsewhere in the codebase.
@@ -299,37 +302,13 @@ send_ipc(code: str, args: list=None)
     args is an empty list if args is None
 ```
 
-#### `vscode/webviews.py`
-
-The file is stable:
-0 lines added or removed
-in the last 4 weeks.
-
-#### `vscode/window.py`
+#### window.py
 
 A mix of functions
 and classes.
 Several objects are imported
 from this file
 around the codebase.
-
-Some important objects are:
-
-**TextEditor**
-
-```python
-TextEditor
-    __init__(self, data: dict = None)
-```
-
-**ActiveTextEditor**
-
-```python
-ActiveTextEditor(TextEditor)
-    create_webview(webview: Webview, column: ViewColumn = ViewColumn.one, options: dict = None) -> Webview
-        Checks if webview is a Webview type, otherwise raises an error.
-        Checks if column is a ViewColumn type, otherwise raises an error.
-```
 
 <!---Documatic-section-fixed: bottom1-start--->
 ## Extensions built using vscode-ext
@@ -342,3 +321,5 @@ Here's a list of some extensions built using vscode-ext. If you'd like to includ
 - [Virtual Assistant](https://github.com/SohamGhugare/vscode-virtual-assistant)
 - [YoExtension](https://github.com/yo56789/YoExtension)
 <!---Documatic-section-fixed: bottom2-end--->
+
+_Document generation aided by [**Documatic**](www.documatic.com)_

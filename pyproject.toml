@@ -1,0 +1,14 @@
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+markers = ["integration: marks integration tests"]
+
+[tool.documatic]
+name = "VScode-ext"
+local = true
+srcdir = "vscode"
+docname = "technical_doc"
+
+[tool.doculog]
+name = "CHANGELOG"
